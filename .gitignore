@@ -1,0 +1,13 @@
+# Elixir / Mix
+/_build/
+/deps/
+*.ez
+.mix/
+.hex/
+
+# Environment / Data
+/data/*.txt
+/erl_crash.dump
+*.swp
+*.DS_Store
+
