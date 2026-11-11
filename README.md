@@ -109,3 +109,4 @@ mix.bat test
 - [x] Existe persistencia en archivos de texto plano (`data/*.txt`).
 - [x] Existen pruebas automatizadas con ExUnit.
 - [x] Interfaz Web funcional desarrollada con el framework Phoenix.
+

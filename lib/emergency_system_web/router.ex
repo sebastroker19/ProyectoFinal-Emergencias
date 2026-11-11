@@ -12,11 +12,17 @@ defmodule EmergencySystemWeb.Router do
   scope "/", EmergencySystemWeb do
     pipe_through :browser
 
-    # Dashboard Principal
+    # Portal Principal (Dashboard)
     get "/", DashboardController, :index
 
-    # Gestión de Sesión y Roles
+    # Gestión de Autenticación, Ingreso y Roles
+    get "/login", SessionController, :new
+    post "/session/login", SessionController, :login
+    post "/session/quick-login", SessionController, :quick_login
+    post "/session/register", SessionController, :register
     post "/session/switch", SessionController, :switch
+    get "/logout", SessionController, :logout
+    post "/logout", SessionController, :logout
 
     # Zonas y Jerarquía Territorial Recursiva
     get "/zones", ZoneController, :index

@@ -1,7 +1,7 @@
 defmodule EmergencySystemWeb.Plugs.AuthUser do
   @moduledoc """
   Gestiona la sesión del usuario en la interfaz web.
-  Si no hay usuario en sesión, inicializa una sesión de demostración por defecto.
+  Si no hay usuario en sesión, asigna un perfil humano predeterminado para demostración.
   """
   import Plug.Conn
 
@@ -13,15 +13,21 @@ defmodule EmergencySystemWeb.Plugs.AuthUser do
     if user do
       assign(conn, :current_user, user)
     else
-      # Usuario de demostración por defecto (Coordinador)
+      # Usuario humano por defecto (Coordinadora Dra. Laura Morales)
       default_user = %{
-        username: "coordinador_general",
+        username: "laura.morales",
+        full_name: "Dra. Laura Morales",
         role: "coordinador",
-        zone: "centro"
+        zone: "Zona 1 - Centro Histórico"
       }
 
-      # Asegurar que esté conectado en el sistema
-      EmergencySystem.connect("coordinador_general", "1234", "coordinador", "centro", "Coordinador General")
+      EmergencySystem.connect(
+        "laura.morales",
+        "1234",
+        "coordinador",
+        "Zona 1 - Centro Histórico",
+        "Dra. Laura Morales"
+      )
 
       conn
       |> put_session(:current_user, default_user)

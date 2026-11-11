@@ -11,8 +11,8 @@ defmodule EmergencySystemWeb.ResourceController do
       if resources == [] do
         """
         <tr>
-          <td colspan="6" class="text-center py-8 text-slate-400 text-sm">
-            No hay recursos registrados en el inventario.
+          <td colspan="6" class="text-center py-10 text-slate-400 text-xs">
+            No hay recursos registrados en el inventario del sistema.
           </td>
         </tr>
         """
@@ -24,7 +24,7 @@ defmodule EmergencySystemWeb.ResourceController do
       if history == [] do
         """
         <div class="text-center py-6 text-slate-400 text-xs">
-          Sin movimientos de inventario registrados.
+          Sin movimientos de inventario registrados recientemente.
         </div>
         """
       else
@@ -36,9 +36,9 @@ defmodule EmergencySystemWeb.ResourceController do
     html_content = """
     <div class="space-y-6">
       <div>
-        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Gestión de Recursos e Inventario Concurrente</h1>
+        <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Gestión de Suministros e Inventario Logístico</h1>
         <p class="text-slate-500 text-sm mt-0.5">
-          Control atómico de entradas, salidas y transferencias entre centros de acopio y albergues (GenServer aislado).
+          Control atómico y supervisado de entradas, salidas y transferencias entre centros de acopio y albergues oficiales.
         </p>
       </div>
 
@@ -46,12 +46,12 @@ defmodule EmergencySystemWeb.ResourceController do
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Tabla de Inventario (2 columnas) -->
         <div class="lg:col-span-2 space-y-6">
-          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/70">
               <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                <span>📦</span> Inventario en Tiempo Real
+                <span>📦</span> Inventario Oficial en Tiempo Real
               </h2>
-              <span class="text-xs text-slate-500">#{length(resources)} items registrados</span>
+              <span class="text-xs text-slate-500 font-medium">#{length(resources)} ítems en inventario</span>
             </div>
 
             <div class="overflow-x-auto">
@@ -59,9 +59,9 @@ defmodule EmergencySystemWeb.ResourceController do
                 <thead class="bg-slate-50 text-[11px] font-bold text-slate-400 uppercase border-b border-slate-100">
                   <tr>
                     <th class="py-3 px-4">Código</th>
-                    <th class="py-3 px-4">Nombre / Categoría</th>
+                    <th class="py-3 px-4">Nombre del Suministro / Categoría</th>
                     <th class="py-3 px-4">Stock Disponible</th>
-                    <th class="py-3 px-4">Ubicación</th>
+                    <th class="py-3 px-4">Centro / Ubicación</th>
                     <th class="py-3 px-4">Estado</th>
                   </tr>
                 </thead>
@@ -73,9 +73,9 @@ defmodule EmergencySystemWeb.ResourceController do
           </div>
 
           <!-- Historial de Movimientos -->
-          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-            <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
-              <span>📜</span> Historial Reciente de Movimientos
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-3">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2 border-b pb-2">
+              <span>📜</span> Trazabilidad de Movimientos y Transferencias
             </h3>
             <div class="space-y-2">
               #{history_rows}
@@ -86,63 +86,65 @@ defmodule EmergencySystemWeb.ResourceController do
         <!-- Columna Lateral: Formularios -->
         <div class="space-y-6">
           <!-- Formulario: Registrar / Ingresar Recurso -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-            <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
-              <span>➕</span> Registrar Entrada de Recurso
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2 border-b pb-2">
+              <span>➕</span> Entrada de Suministros
             </h3>
             <form action="/resources" method="post" class="space-y-3">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Código de Recurso</label>
-                <input type="text" name="code" placeholder="Ej: R_AGUA_01" required class="w-full text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Código del Suministro</label>
+                <input type="text" name="code" placeholder="Ej: AGUA-02 / MED-03" required class="w-full text-xs px-3.5 py-2.5 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nombre</label>
-                <input type="text" name="name" placeholder="Ej: Agua Potable Bidón" required class="w-full text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nombre Descriptivo</label>
+                <input type="text" name="name" placeholder="Ej: Suero Fisiológico 500ml" required class="w-full text-xs px-3.5 py-2.5 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Cantidad</label>
-                  <input type="number" name="quantity" min="1" placeholder="Ej: 200" required class="w-full text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Cantidad</label>
+                  <input type="number" name="quantity" min="1" placeholder="Ej: 150" required class="w-full text-xs px-3.5 py-2.5 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Unidad</label>
-                  <input type="text" name="unit" placeholder="litros / cajas" required class="w-full text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Unidad de Medida</label>
+                  <input type="text" name="unit" placeholder="cajas / bidones / kits" required class="w-full text-xs px-3.5 py-2.5 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
                 </div>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Ubicación / Centro</label>
-                <input type="text" name="location" placeholder="Ej: centro_acopio_norte" required class="w-full text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Centro de Acopio / Almacén</label>
+                <input type="text" name="location" placeholder="Ej: Centro de Acopio Estadio Centenario" required class="w-full text-xs px-3.5 py-2.5 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none">
               </div>
-              <button type="submit" class="w-full py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg transition shadow-sm">
-                Registrar Entrada
+              <button type="submit" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl transition shadow-sm">
+                Registrar Entrada de Inventario
               </button>
             </form>
           </div>
 
           <!-- Formulario: Transferencia entre Centros -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-            <h3 class="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
-              <span>🔄</span> Transferir Recursos
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2 border-b pb-2">
+              <span>🔄</span> Transferencia Inter-Almacenes
             </h3>
             <form action="/resources/transfer" method="post" class="space-y-3">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Código del Recurso</label>
-                <input type="text" name="code" placeholder="Ej: R_AGUA_01" required class="w-full text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Suministro a Transferir</label>
+                <select name="code" required class="w-full text-xs px-3.5 py-2.5 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                  #{render_resource_select(resources)}
+                </select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Ubicación Origen</label>
-                <input type="text" name="origin" placeholder="Ej: centro_acopio_norte" required class="w-full text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Ubicación Origen Exacta</label>
+                <input type="text" name="origin" placeholder="Ej: Centro de Acopio Estadio Centenario" required class="w-full text-xs px-3.5 py-2.5 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Ubicación Destino</label>
-                <input type="text" name="target" placeholder="Ej: albergue_cordillera" required class="w-full text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Albergue o Centro Destino</label>
+                <input type="text" name="target" placeholder="Ej: Albergue Polideportivo Norte" required class="w-full text-xs px-3.5 py-2.5 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Cantidad a Transferir</label>
-                <input type="number" name="quantity" min="1" placeholder="Ej: 50" required class="w-full text-xs px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Cantidad a Transferir</label>
+                <input type="number" name="quantity" min="1" placeholder="Ej: 30" required class="w-full text-xs px-3.5 py-2.5 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
               </div>
-              <button type="submit" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg transition shadow-sm">
-                Ejecutar Transferencia
+              <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl transition shadow-sm">
+                Ejecutar Transferencia Inmediata
               </button>
             </form>
           </div>
@@ -158,10 +160,10 @@ defmodule EmergencySystemWeb.ResourceController do
     user = conn.assigns[:current_user]
     qty_num = String.to_integer(qty)
 
-    case EmergencySystem.register_resource(user.username, code, name, "general", qty_num, unit, loc) do
+    case EmergencySystem.register_resource(user.username, code, name, "Suministros Humanitarios", qty_num, unit, loc) do
       {:ok, _res} ->
         conn
-        |> put_flash(:info, "Entrada de inventario registrada: #{code} (#{qty_num} #{unit}) en #{loc}.")
+        |> put_flash(:info, "Entrada de inventario registrada: #{code} - #{name} (#{qty_num} #{unit}) en #{loc}.")
         |> redirect(to: "/resources")
 
       {:error, reason} ->
@@ -178,7 +180,7 @@ defmodule EmergencySystemWeb.ResourceController do
     case EmergencySystem.transfer_resource(user.username, code, origin, target, qty_num) do
       {:ok, :transferred, _orig, _dest} ->
         conn
-        |> put_flash(:info, "Transferencia de #{qty_num} unidades de #{code} completada con éxito.")
+        |> put_flash(:info, "Transferencia de #{qty_num} unidades de #{code} desde '#{origin}' hacia '#{target}' completada con éxito.")
         |> redirect(to: "/resources")
 
       {:error, reason} ->
@@ -193,22 +195,23 @@ defmodule EmergencySystemWeb.ResourceController do
 
     status_badge =
       if is_critical do
-        "<span class='px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-300 font-bold text-[10px]'>CRÍTICO</span>"
+        "<span class='px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-300 font-bold text-[10px] animate-pulse'>STOCK CRÍTICO</span>"
       else
         "<span class='px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300 font-bold text-[10px]'>DISPONIBLE</span>"
       end
 
     """
     <tr class="hover:bg-slate-50 transition">
-      <td class="py-3 px-4 font-mono font-bold text-slate-800">#{r.code}</td>
+      <td class="py-3 px-4 font-mono font-bold text-slate-800 text-xs">#{r.code}</td>
       <td class="py-3 px-4">
-        <div class="font-medium text-slate-800">#{r.name}</div>
-        <div class="text-[11px] text-slate-400 capitalize">#{r.category}</div>
+        <div class="font-bold text-slate-900 text-xs">#{r.name}</div>
+        <div class="text-[11px] text-slate-500">#{r.category}</div>
       </td>
-      <td class="py-3 px-4 font-bold text-slate-900">
-        #{r.available} <span class="text-xs text-slate-500 font-normal">#{r.unit}</span>
+      <td class="py-3 px-4 font-mono">
+        <span class="text-sm font-bold text-slate-900">#{r.available}</span>
+        <span class="text-xs text-slate-500 font-normal">#{r.unit}</span>
       </td>
-      <td class="py-3 px-4 text-slate-600">#{r.location}</td>
+      <td class="py-3 px-4 text-slate-600 font-medium text-xs">#{r.location}</td>
       <td class="py-3 px-4">#{status_badge}</td>
     </tr>
     """
@@ -217,19 +220,32 @@ defmodule EmergencySystemWeb.ResourceController do
   defp render_history_item(h) do
     type_badge =
       case h.type do
-        :entry -> "<span class='text-emerald-700 font-bold'>[ENTRADA]</span>"
-        :exit -> "<span class='text-red-700 font-bold'>[SALIDA]</span>"
-        :transfer -> "<span class='text-blue-700 font-bold'>[TRANSFERENCIA]</span>"
+        :entry -> "<span class='px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]'>ENTRADA</span>"
+        :exit -> "<span class='px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold text-[10px]'>SALIDA</span>"
+        :transfer -> "<span class='px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[10px]'>TRANSFERENCIA</span>"
       end
 
     """
-    <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100 text-xs">
+    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
       <div>
-        #{type_badge} <span class="font-mono font-semibold text-slate-800">#{h.code}</span>
-        #{if h[:from] && h[:to], do: "<span class='text-slate-500'>(#{h.from} &rarr; #{h.to})</span>", else: ""}
+        <div class="flex items-center gap-2">
+          #{type_badge}
+          <span class="font-mono font-bold text-slate-800">#{h.code}</span>
+        </div>
+        #{if h[:from] && h[:to], do: "<div class='text-[11px] text-slate-500 mt-0.5'>#{h.from} &rarr; #{h.to}</div>", else: "<div class='text-[11px] text-slate-400 mt-0.5'>Ubicación: #{h[:location]}</div>"}
       </div>
-      <div class="font-bold text-slate-700">#{h.amount} unidades</div>
+      <div class="font-extrabold text-slate-900 text-sm font-mono">#{h.amount} unid.</div>
     </div>
     """
+  end
+
+  defp render_resource_select(resources) do
+    if resources == [] do
+      "<option value=''>Sin recursos</option>"
+    else
+      Enum.map_join(resources, "\n", fn r ->
+        "<option value='#{r.code}'>#{r.code} - #{r.name} (Disp: #{r.available} en #{r.location})</option>"
+      end)
+    end
   end
 end

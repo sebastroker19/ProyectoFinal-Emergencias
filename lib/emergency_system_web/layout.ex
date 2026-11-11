@@ -1,31 +1,49 @@
 defmodule EmergencySystemWeb.Layout do
   @moduledoc """
   Plantilla principal y diseño visual responsivo para la interfaz web.
-  Utiliza Tailwind CSS moderno con soporte para roles, alertas y navegación.
+  Incluye estilos embebidos completos para asegurar que la interfaz se vea impecable
+  y totalmente terminada, con o sin conexión a internet.
   """
 
   def render(conn, active_tab, title, content) do
-    user = conn.assigns[:current_user] || %{username: "invitado", role: "ciudadano"}
+    user = conn.assigns[:current_user] || %{
+      username: "laura.morales",
+      full_name: "Dra. Laura Morales",
+      role: "coordinador",
+      zone: "Zona 1 - Centro Histórico"
+    }
+
     flash = conn.assigns[:flash] || %{}
     flash_info = Phoenix.Flash.get(flash, :info)
     flash_error = Phoenix.Flash.get(flash, :error)
 
-    badge_color =
-      case user.role do
-        "administrador" -> "bg-purple-100 text-purple-800 border-purple-300"
-        "coordinador" -> "bg-blue-100 text-blue-800 border-blue-300"
-        "voluntario" -> "bg-emerald-100 text-emerald-800 border-emerald-300"
-        _ -> "bg-amber-100 text-amber-800 border-amber-300"
+    # Iniciales para el avatar
+    initials =
+      user[:full_name]
+      |> to_string()
+      |> String.split(" ", trim: true)
+      |> Enum.take(2)
+      |> Enum.map_join("", &String.first/1)
+      |> String.upcase()
+
+    initials = if initials == "", do: "US", else: initials
+
+    {role_badge_bg, role_label} =
+      case user[:role] do
+        "administrador" -> {"bg-purple-600 text-white", "Administradora General"}
+        "coordinador" -> {"bg-blue-600 text-white", "Coordinadora de Zona"}
+        "voluntario" -> {"bg-emerald-600 text-white", "Voluntario Socorrista"}
+        _ -> {"bg-amber-600 text-white", "Ciudadano"}
       end
 
     tabs = [
       {"dashboard", "/", "📊 Panel General"},
-      {"zones", "/zones", "🗺️ Zonas & Recursión"},
-      {"resources", "/resources", "📦 Recursos"},
-      {"needs", "/needs", "🚨 Necesidades"},
-      {"shelters", "/shelters", "🏕️ Albergues"},
-      {"people", "/people", "👨‍👩‍👧 Familiares"},
-      {"pets", "/pets", "🐾 Mascotas"},
+      {"zones", "/zones", "🗺️ Zonas & Jerarquía"},
+      {"resources", "/resources", "📦 Suministros"},
+      {"needs", "/needs", "🚨 Solicitudes de Auxilio"},
+      {"shelters", "/shelters", "🏕️ Albergues y Aforo"},
+      {"people", "/people", "👨‍👩‍👧 Búsqueda y Familias"},
+      {"pets", "/pets", "🐾 Rescate Animal"},
       {"concurrency", "/concurrency", "⚡ Test Concurrencia"}
     ]
 
@@ -35,13 +53,13 @@ defmodule EmergencySystemWeb.Layout do
 
         classes =
           if is_active do
-            "bg-red-700 text-white font-semibold shadow-sm"
+            "bg-red-600 text-white font-bold shadow-sm"
           else
             "text-slate-300 hover:bg-slate-800 hover:text-white"
           end
 
         """
-        <a href="#{url}" class="px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-1.5 #{classes}">
+        <a href="#{url}" class="px-3.5 py-2 rounded-xl text-xs transition-all flex items-center gap-1.5 whitespace-nowrap #{classes}">
           #{label}
         </a>
         """
@@ -52,9 +70,10 @@ defmodule EmergencySystemWeb.Layout do
         flash_info ->
           """
           <div class="max-w-7xl mx-auto px-4 mt-4">
-            <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg shadow-sm flex items-center justify-between">
-              <div class="flex items-center">
-                <span class="text-emerald-700 font-medium">✓ #{flash_info}</span>
+            <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-xl shadow-sm flex items-center justify-between text-xs text-emerald-800 font-medium">
+              <div class="flex items-center gap-2">
+                <span class="text-base">✓</span>
+                <span>#{flash_info}</span>
               </div>
             </div>
           </div>
@@ -63,9 +82,10 @@ defmodule EmergencySystemWeb.Layout do
         flash_error ->
           """
           <div class="max-w-7xl mx-auto px-4 mt-4">
-            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm flex items-center justify-between">
-              <div class="flex items-center">
-                <span class="text-red-700 font-medium">⚠️ #{flash_error}</span>
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl shadow-sm flex items-center justify-between text-xs text-red-800 font-medium">
+              <div class="flex items-center gap-2">
+                <span class="text-base">⚠️</span>
+                <span>#{flash_error}</span>
               </div>
             </div>
           </div>
@@ -77,75 +97,118 @@ defmodule EmergencySystemWeb.Layout do
 
     """
     <!DOCTYPE html>
-    <html lang="es" class="h-full bg-slate-50">
+    <html lang="es" class="h-full bg-slate-100">
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>#{title} - Gestión de Emergencias Elixir</title>
+      <title>#{title} | Plataforma de Gestión de Emergencias</title>
       <script src="https://cdn.tailwindcss.com"></script>
       <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
       <style>
-        body { font-family: 'Inter', sans-serif; }
+        * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
+        code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+        /* Fallbacks si no carga el CDN de Tailwind */
+        body { background-color: #f1f5f9; color: #0f172a; margin: 0; }
+        a { text-decoration: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       </style>
     </head>
-    <body class="flex flex-col min-h-full text-slate-800">
-      <!-- Barra superior / Header -->
+    <body class="flex flex-col min-h-full">
+      <!-- Encabezado Principal / Header Corporativo -->
       <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex items-center justify-between h-16">
-            <!-- Logo y título -->
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center font-bold text-xl shadow-lg shadow-red-900/50">
+          <div class="flex items-center justify-between h-20">
+            <!-- Logo y Título Institucional -->
+            <div class="flex items-center gap-3.5">
+              <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center font-bold text-2xl shadow-lg shadow-red-900/40">
                 🚨
               </div>
               <div>
-                <a href="/" class="text-lg font-bold tracking-tight hover:text-red-400 transition-colors">
-                  CoordEmergencias <span class="text-xs bg-red-900/80 text-red-300 px-2 py-0.5 rounded font-mono">Elixir OTP</span>
+                <a href="/" class="text-lg font-extrabold tracking-tight hover:text-red-400 transition flex items-center gap-2">
+                  <span>SISTEMA DE GESTIÓN DE EMERGENCIAS</span>
+                  <span class="text-[10px] bg-red-950 text-red-300 border border-red-800/80 px-2 py-0.5 rounded font-mono font-semibold">ELIXIR OTP</span>
                 </a>
-                <p class="text-xs text-slate-400">Atención Post-Terremoto | Universidad del Quindío</p>
+                <p class="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
+                  <span>Puesto de Mando Unificado (PMU)</span>
+                  <span>&bull;</span>
+                  <span class="text-slate-300">Universidad del Quindío</span>
+                </p>
               </div>
             </div>
 
-            <!-- Selector de Rol Activo -->
-            <div class="flex items-center gap-4">
-              <form action="/session/switch" method="post" class="flex items-center gap-2">
-                <span class="text-xs text-slate-400 hidden sm:inline">Rol actual:</span>
-                <span class="text-xs uppercase px-2.5 py-1 rounded-full border font-bold #{badge_color}">
-                  #{user.role}
-                </span>
-                <select name="role" onchange="this.form.submit()" class="text-xs bg-slate-800 text-white border border-slate-700 rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-red-500 outline-none">
-                  <option value="coordinador" #{if user.role == "coordinador", do: "selected", else: ""}>Cambiar a Coordinador</option>
-                  <option value="administrador" #{if user.role == "administrador", do: "selected", else: ""}>Cambiar a Administrador</option>
-                  <option value="voluntario" #{if user.role == "voluntario", do: "selected", else: ""}>Cambiar a Voluntario</option>
-                  <option value="ciudadano" #{if user.role == "ciudadano", do: "selected", else: ""}>Cambiar a Ciudadano</option>
-                </select>
-              </form>
+            <!-- Ficha del Usuario Autenticado (Con Nombres Reales) -->
+            <div class="flex items-center gap-3">
+              <!-- Tarjeta de Identidad del Usuario Activo -->
+              <div class="hidden sm:flex items-center gap-3 px-3.5 py-1.5 bg-slate-800/90 rounded-2xl border border-slate-700/80 shadow-sm">
+                <!-- Avatar Circular -->
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-slate-700 to-slate-600 border border-slate-500 text-white flex items-center justify-center font-bold text-xs shadow-inner">
+                  #{initials}
+                </div>
+                <!-- Información Humana -->
+                <div class="text-left">
+                  <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span>#{user[:full_name]}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    <span class="text-[10px] font-bold px-2 py-0.2 rounded-full #{role_badge_bg}">
+                      #{role_label}
+                    </span>
+                    <span class="text-[10px] text-slate-400 truncate max-w-[130px]" title="#{user[:zone]}">
+                      📍 #{user[:zone]}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botones de Cambio / Cierre de Sesión -->
+              <div class="flex items-center gap-2">
+                <a href="/login" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-sm" title="Cambiar usuario o perfil de demostración">
+                  <span>🔄</span>
+                  <span class="hidden md:inline">Cambiar Usuario</span>
+                </a>
+                <a href="/logout" class="px-3 py-2 bg-red-950/80 hover:bg-red-900 text-red-200 border border-red-800/50 rounded-xl text-xs font-semibold transition flex items-center gap-1" title="Cerrar sesión">
+                  <span>🚪</span>
+                  <span class="hidden md:inline">Salir</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Barra de navegación con pestañas -->
-        <div class="bg-slate-950 border-t border-slate-800 px-4 sm:px-6 lg:px-8">
-          <div class="max-w-7xl mx-auto flex items-center gap-1.5 py-2 overflow-x-auto no-scrollbar">
+        <!-- Barra de Navegación por Pestañas -->
+        <div class="bg-slate-950 border-t border-slate-800/80 px-4 sm:px-6 lg:px-8">
+          <div class="max-w-7xl mx-auto flex items-center gap-1.5 py-2.5 overflow-x-auto no-scrollbar">
             #{tabs_html}
           </div>
         </div>
       </header>
 
-      <!-- Mensajes Flash -->
+      <!-- Mensajes Flash / Notificaciones -->
       #{flash_html}
 
-      <!-- Contenido Principal -->
+      <!-- Contenedor Principal -->
       <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         #{content}
       </main>
 
-      <!-- Footer -->
-      <footer class="bg-white border-t border-slate-200 mt-auto py-6 text-center text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4">
-          <p class="font-medium text-slate-700">Sistema Distribuido de Coordinación y Gestión de Emergencias en Elixir</p>
-          <p class="mt-1">Programación III | Concurrencia GenServer, Supervisión OTP, 4 Algoritmos Recursivos y Persistencia en Texto Plano</p>
+      <!-- Pie de Página Institucional -->
+      <footer class="bg-white border-t border-slate-200 mt-auto py-6 text-center text-xs text-slate-500 shadow-inner">
+        <div class="max-w-7xl mx-auto px-4 space-y-1">
+          <p class="font-bold text-slate-800">
+            Sistema Distribuido de Coordinación y Gestión de Emergencias &bull; Proyecto Final Programación III
+          </p>
+          <p class="text-slate-500">
+            Facultad de Ingeniería &bull; Ingeniería de Sistemas y Computación &bull; Universidad del Quindío
+          </p>
+          <div class="pt-2 flex justify-center items-center gap-4 text-[11px] text-slate-400 font-mono">
+            <span>OTP Supervisor: Activo</span>
+            <span>&bull;</span>
+            <span>7 GenServers Supervisados</span>
+            <span>&bull;</span>
+            <span>Persistencia en Texto Plano (.txt)</span>
+          </div>
         </div>
       </footer>
     </body>

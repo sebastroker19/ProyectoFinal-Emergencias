@@ -21,24 +21,24 @@ defmodule EmergencySystemWeb.DashboardController do
     html_content = """
     <div class="space-y-6">
       <!-- Banner de Bienvenida -->
-      <div class="bg-gradient-to-r from-slate-900 to-red-950 rounded-2xl p-6 sm:p-8 text-white shadow-lg border border-red-900/40">
+      <div class="bg-gradient-to-r from-slate-900 to-red-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-red-900/50">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/30 text-red-300 text-xs font-semibold mb-3 border border-red-500/30">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/30 text-red-300 text-xs font-bold mb-3 border border-red-500/30">
               <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
-              SISTEMA ACTIVO EN TIEMPO REAL
+              SISTEMA ACTIVO &bull; SESIÓN: #{user[:full_name]} (#{String.upcase(to_string(user[:role]))})
             </div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Centro de Mando y Coordinación</h1>
-            <p class="text-slate-300 text-sm mt-1 max-w-2xl">
-              Plataforma concurrente en Elixir para la asignación de recursos, triaje de necesidades y localización de afectados post-terremoto.
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Centro de Mando y Coordinación de Emergencias</h1>
+            <p class="text-slate-300 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
+              Plataforma distribuida en Elixir / OTP para coordinar atención médica, suministros humanitarios, albergues y búsqueda de personas y mascotas post-terremoto.
             </p>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <a href="/concurrency" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center gap-1.5">
-              ⚡ Probar Concurrencia
+          <div class="flex flex-wrap gap-2.5">
+            <a href="/login" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition shadow-sm border border-slate-700 flex items-center gap-1.5">
+              <span>👤</span> Cambiar Perfil
             </a>
-            <a href="/needs" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-medium border border-slate-700 transition">
-              🚨 Ver Necesidades
+            <a href="/concurrency" class="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition shadow-md shadow-red-900/40 flex items-center gap-1.5">
+              <span>⚡</span> Probar Concurrencia
             </a>
           </div>
         </div>

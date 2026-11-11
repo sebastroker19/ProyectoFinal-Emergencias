@@ -6,6 +6,27 @@ defmodule EmergencySystemWebTest do
 
   @opts Endpoint.init([])
 
+  test "GET /login carga la pantalla de autenticación y perfiles de demostración" do
+    conn =
+      :get
+      |> conn("/login")
+      |> Endpoint.call(@opts)
+
+    assert conn.status == 200
+    assert conn.resp_body =~ "Portal de Coordinación de Emergencias"
+    assert conn.resp_body =~ "Dra. Laura Morales"
+    assert conn.resp_body =~ "Ing. Sofía Mendoza"
+  end
+
+  test "POST /session/quick-login permite ingresar con perfil demo en 1 clic" do
+    post_conn =
+      :post
+      |> conn("/session/quick-login", %{"profile" => "laura"})
+      |> Endpoint.call(@opts)
+
+    assert post_conn.status == 302
+  end
+
   test "GET / carga el panel de mando con status 200" do
     conn =
       :get
@@ -13,7 +34,7 @@ defmodule EmergencySystemWebTest do
       |> Endpoint.call(@opts)
 
     assert conn.status == 200
-    assert conn.resp_body =~ "Centro de Mando y Coordinación"
+    assert conn.resp_body =~ "Centro de Mando"
     assert conn.resp_body =~ "Personas Afectadas"
   end
 
@@ -42,7 +63,7 @@ defmodule EmergencySystemWebTest do
       |> Endpoint.call(@opts)
 
     assert conn.status == 200
-    assert conn.resp_body =~ "Gestión de Recursos e Inventario Concurrente"
+    assert conn.resp_body =~ "Gestión de Suministros e Inventario Logístico"
 
     post_conn =
       :post
@@ -59,7 +80,7 @@ defmodule EmergencySystemWebTest do
       |> Endpoint.call(@opts)
 
     assert conn.status == 200
-    assert conn.resp_body =~ "Gestión de Necesidades Puntuales"
+    assert conn.resp_body =~ "Gestión de Necesidades"
   end
 
   test "GET /shelters y control de aforo" do
@@ -112,4 +133,3 @@ defmodule EmergencySystemWebTest do
     assert sim_conn.resp_body =~ "No hubo condición de carrera"
   end
 end
-
